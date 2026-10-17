@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10141d">
+<title>StreamDeck — IPTV Player</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#0b0e14;--panel:#141a24;--panel2:#1a2230;--line:#273244;--text:#f2f5fa;--muted:#9aa8bc;--accent:#67e8b5;--accent2:#36c991;--danger:#ff7f8b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 75% -10%,#1a3440 0,transparent 35%),var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;min-height:100vh}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px clamp(16px,4vw,54px);border-bottom:1px solid #202938;background:#0b0e14c9;position:sticky;top:0;z-index:5;backdrop-filter:blur(14px)}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.04em;font-size:21px}.logo{width:36px;height:36px;border-radius:12px;background:var(--accent);color:#072018;display:grid;place-items:center;font-size:19px}
+.pill{border:1px solid var(--line);border-radius:999px;padding:7px 11px;color:var(--muted);font-size:12px}
+main{max-width:1440px;margin:auto;padding:30px clamp(14px,4vw,54px) 50px}.intro{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:24px}.eyebrow{color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.intro h1{font-size:clamp(28px,4vw,44px);line-height:1.1;letter-spacing:-.05em;margin:9px 0}.intro p{color:var(--muted);margin:0;line-height:1.6;max-width:620px;font-size:14px}
+.layout{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(280px,.8fr);gap:20px;align-items:start}.panel{background:linear-gradient(160deg,#171e29,#111720);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 18px 60px #0002}
+.player-top{padding:15px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--line)}.now{display:flex;align-items:center;gap:10px;min-width:0}.live-dot{width:8px;height:8px;background:var(--accent);border-radius:50%;box-shadow:0 0 13px #67e8b588}.now strong{font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.now small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+video{width:100%;aspect-ratio:16/9;display:block;background:#030507;object-fit:contain}.player-foot{padding:15px 18px;color:var(--muted);font-size:12px;line-height:1.5}
+.controls{padding:18px;display:grid;gap:12px}.label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;display:block;margin-bottom:8px}input,select{width:100%;background:#0b1018;color:var(--text);border:1px solid #2a3547;border-radius:10px;padding:12px 13px;font:inherit;font-size:13px;outline:none;min-width:0}input:focus,select:focus{border-color:var(--accent)}.urlrow{display:flex;gap:8px}.urlrow input{flex:1}.btn{border:0;border-radius:10px;padding:11px 14px;font:inherit;font-size:12px;font-weight:800;cursor:pointer;transition:transform .15s,background .15s;white-space:nowrap}.btn:hover{transform:translateY(-1px)}.primary{background:var(--accent);color:#062016}.primary:hover{background:#8af4cc}.secondary{background:#253043;color:var(--text);border:1px solid #334157}.danger{background:#38212a;color:#ffb0b7;border:1px solid #58313b}.twobtn{display:flex;gap:8px;flex-wrap:wrap}.twobtn .btn{flex:1}
+.status{font-size:12px;line-height:1.5;color:var(--muted);min-height:18px}.status.error{color:var(--danger)}.status.good{color:var(--accent)}
+.sidebar-head{padding:17px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.sidebar-head h2{font-size:14px;margin:0}.count{color:var(--muted);font-size:11px}.list-tools{padding:12px;display:flex;gap:8px;border-bottom:1px solid var(--line)}.list-tools input{padding:10px}.channels{padding:8px;max-height:430px;overflow:auto}.empty{padding:28px 18px;text-align:center;color:var(--muted);font-size:12px;line-height:1.7}.channel{width:100%;text-align:left;display:flex;align-items:center;gap:11px;padding:11px;border:1px solid transparent;background:transparent;border-radius:12px;color:var(--text);cursor:pointer}.channel:hover{background:#1c2634}.channel.active{background:#1b302e;border-color:#28564a}.channel-icon{width:38px;height:38px;flex-shrink:0;border-radius:10px;background:#222d3d;display:grid;place-items:center;color:var(--accent);font-size:13px;font-weight:800}.channel-text{min-width:0;flex:1}.channel-text strong{display:block;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.channel-text small{display:block;color:var(--muted);font-size:10px;margin-top:4px}.channel-play{color:var(--muted);font-size:13px}
+.details{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}.tip{background:#111720;border:1px solid var(--line);border-radius:13px;padding:15px}.tip strong{display:block;font-size:12px;margin-bottom:6px}.tip p{font-size:11px;color:var(--muted);line-height:1.6;margin:0}
+footer{max-width:1440px;margin:auto;padding:0 clamp(14px,4vw,54px) 28px;color:#6e7b8f;font-size:11px;line-height:1.6}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.channels{max-height:320px}.intro{align-items:start;flex-direction:column}.details{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){header{padding:14px}.intro h1{font-size:31px}.details{grid-template-columns:1fr}.urlrow{flex-direction:column}.urlrow .btn{width:100%}.player-top{padding:13px}.controls{padding:14px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="logo">▶</div> StreamDeck <span style="color:var(--muted);font-weight:500;font-size:12px;letter-spacing:0">IPTV PLAYER</span></div>
+  <div class="pill">Browser-based · No account</div>
+</header>
+<main>
+  <section class="intro">
+    <div><div class="eyebrow">Your streams, one place</div><h1>Watch what you want.</h1><p>Paste a stream URL or import an M3U playlist. Your playlist stays in this browser session; nothing is uploaded to a server.</p></div>
+    <div class="pill">HLS · MP4 · WebM · M3U</div>
+  </section>
+  <div class="layout">
+    <section>
+      <div class="panel">
+        <div class="player-top"><div class="now"><span class="live-dot"></span><div style="min-width:0"><strong id="playingTitle">Ready to play</strong><small id="playingSub">Paste a URL below to get started</small></div></div><span class="pill">PLAYER</span></div>
+        <video id="video" controls playsinline></video>
+        <div class="player-foot" id="playerNote">Supported formats depend on your browser. HLS playback is enabled with hls.js where needed.</div>
+      </div>
+      <div class="panel" style="margin-top:16px">
+        <div class="controls">
+          <div><label class="label" for="streamUrl">Stream URL</label><div class="urlrow"><input id="streamUrl" type="url" placeholder="https://example.com/live/stream.m3u8" autocomplete="url"><button class="btn primary" id="playUrl">▶ Play URL</button></div></div>
+          <div class="twobtn"><button class="btn secondary" id="stopBtn">■ Stop</button><button class="btn secondary" id="fullscreenBtn">⛶ Fullscreen</button><button class="btn secondary" id="copyUrlBtn">Copy current URL</button></div>
+          <div><label class="label" for="playlistFile">Import M3U / M3U8 playlist</label><input id="playlistFile" type="file" accept=".m3u,.m3u8,.txt,audio/x-mpegurl,application/vnd.apple.mpegurl"></div>
+          <div><label class="label" for="playlistUrl">Or load a playlist URL</label><div class="urlrow"><input id="playlistUrl" type="url" placeholder="https://example.com/playlist.m3u"><button class="btn secondary" id="loadPlaylist">Load playlist</button></div></div>
+          <div class="status" id="status" role="status">Ready. Add a stream URL or playlist to begin.</div>
+        </div>
+      </div>
+      <div class="details">
+        <div class="tip"><strong>🔒 Private by design</strong><p>Your imported local playlist is parsed in your browser and isn't sent to this webpage's creator.</p></div>
+        <div class="tip"><strong>⚠️ Playback note</strong><p>Some streams require a login, valid token, compatible codec, or server-side CORS permission. This page cannot bypass those restrictions.</p></div>
+      </div>
+    </section>
+    <aside class="panel">
+      <div class="sidebar-head"><h2>Channel list</h2><span class="count" id="channelCount">0 channels</span></div>
+      <div class="list-tools"><input id="filter" type="search" placeholder="Search channels…" aria-label="Search channels"></div>
+      <div id="channels" class="channels"><div class="empty">No channels loaded yet.<br>Import an M3U playlist or play a URL directly.</div></div>
+    </aside>
+  </div>
+</main>
+<footer>Use only stream URLs and playlists you are authorized to access. StreamDeck is a player interface and does not provide TV channels or streaming content. HLS playback uses the open-source hls.js library from a public CDN.</footer>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
+<script>
+(() => {
+ const $ = id => document.getElementById(id);
+ const video = $('video'), status = $('status'), channelsEl = $('channels');
+ let hls = null, channels = [], currentUrl = '', activeIndex = -1;
+ function setStatus(message, kind='') { status.textContent = message; status.className = 'status ' + kind; }
+ function safeUrl(raw) {
+   try { const u = new URL(raw.trim()); return ['http:','https:','blob:'].includes(u.protocol) ? u.href : ''; }
+   catch { return ''; }
+ }
+ function stop() {
+   if (hls) { hls.destroy(); hls = null; }
+   video.pause(); video.removeAttribute('src'); video.load(); currentUrl = '';
+ }
+ function play(raw, title='Direct stream', index=-1) {
+   const url = safeUrl(raw);
+   if (!url) { setStatus('Enter a valid http:// or https:// stream URL.', 'error'); return; }
+   stop(); currentUrl = url; activeIndex = index; $('streamUrl').value = url;
+   $('playingTitle').textContent = title || 'Direct stream';
+   $('playingSub').textContent = url.length > 72 ? url.slice(0,69)+'…' : url;
+   const isHls = /\.m3u8(?:$|[?#])/i.test(url) || /mpegurl/i.test(url);
+   if (isHls && window.Hls && Hls.isSupported()) {
+     hls = new Hls({enableWorker:true, lowLatencyMode:true});
+     hls.loadSource(url); hls.attachMedia(video);
+     hls.on(Hls.Events.MANIFEST_PARSED, () => { setStatus('Stream loaded. Press play if playback did not start automatically.', 'good'); video.play().catch(()=>{}); });
+     hls.on(Hls.Events.ERROR, (_, data) => { if (data.fatal) setStatus('Could not play this stream. Check the URL, access credentials, and CORS settings.', 'error'); });
+     setStatus('Loading HLS stream…');
+   } else {
+     video.src = url;
+     video.play().then(()=>setStatus('Playing stream.', 'good')).catch(()=>setStatus('URL loaded. Press Play; if it fails, the format may not be browser-compatible or the server may block browser playback.', ''));
+   }
+   renderChannels();
+ }
+ function parseM3U(text) {
+   const lines = text.replace(/^\uFEFF/,'').split(/\r?\n/);
+   const out = []; let pending = null;
+   for (const raw of lines) {
+     const line = raw.trim(); if (!line) continue;
+     if (line.startsWith('#EXTINF')) {
+       const comma = line.indexOf(',');
+       const meta = comma >= 0 ? line.slice(0,comma) : line;
+       const name = comma >= 0 ? line.slice(comma+1).trim() : 'Unnamed channel';
+       const attrs = {};
+       for (const m of meta.matchAll(/([\w-]+)="([^"]*)"/g)) attrs[m[1].toLowerCase()] = m[2];
+       pending = {name:name || attrs['tvg-name'] || 'Unnamed channel', group:attrs['group-title'] || 'IPTV', logo:attrs['tvg-logo'] || '', url:''};
+     } else if (!line.startsWith('#')) {
+       const url = safeUrl(line);
+       if (url) out.push({... (pending || {name: new URL(url).hostname, group:'IPTV', logo:''}), url});
+       pending = null;
+     }
+   }
+   return out;
+ }
+ function renderChannels() {
+   const q = $('filter').value.toLowerCase().trim();
+   const shown = channels.map((c,i)=>({...c,i})).filter(c => (c.name+' '+c.group).toLowerCase().includes(q));
+   $('channelCount').textContent = `${channels.length} channel${channels.length===1?'':'s'}`;
+   channelsEl.innerHTML = '';
+   if (!shown.length) { channelsEl.innerHTML = `<div class="empty">${channels.length ? 'No channels match your search.' : 'No channels loaded yet.<br>Import an M3U playlist or play a URL directly.'}</div>`; return; }
+   for (const c of shown) {
+     const btn = document.createElement('button'); btn.className = 'channel' + (c.i===activeIndex?' active':''); btn.type='button';
+     const ico = document.createElement('span'); ico.className='channel-icon'; ico.textContent = c.name.slice(0,2).toUpperCase();
+     const info = document.createElement('span'); info.className='channel-text';
+     const strong = document.createElement('strong'); strong.textContent=c.name;
+     const small = document.createElement('small'); small.textContent=c.group;
+     info.append(strong,small);
+     const playIcon = document.createElement('span'); playIcon.className='channel-play'; playIcon.textContent='▶';
+     btn.append(ico,info,playIcon); btn.addEventListener('click',()=>play(c.url,c.name,c.i)); channelsEl.append(btn);
+   }
+ }
+ function loadPlaylistText(text) {
+   const parsed = parseM3U(text);
+   channels = parsed; activeIndex = -1; renderChannels();
+   if (parsed.length) setStatus(`Loaded ${parsed.length} channel${parsed.length===1?'':'s'}. Choose one from the channel list.`, 'good');
+   else setStatus('No playable HTTP/HTTPS stream URLs were found in this playlist.', 'error');
+ }
+ $('playUrl').addEventListener('click',()=>play($('streamUrl').value));
+ $('streamUrl').addEventListener('keydown',e=>{if(e.key==='Enter')play($('streamUrl').value)});
+ $('stopBtn').addEventListener('click',()=>{stop();$('playingTitle').textContent='Playback stopped';$('playingSub').textContent='Choose a channel or enter a URL';setStatus('Playback stopped.')});
+ $('fullscreenBtn').addEventListener('click',()=>{if(video.requestFullscreen) video.requestFullscreen(); else if(video.webkitEnterFullscreen) video.webkitEnterFullscreen();});
+ $('copyUrlBtn').addEventListener('click',async()=>{if(!currentUrl){setStatus('Play a stream first to copy its URL.');return}try{await navigator.clipboard.writeText(currentUrl);setStatus('Current stream URL copied.','good')}catch{setStatus('Clipboard access is unavailable in this browser.')}});
+ $('playlistFile').addEventListener('change',async e=>{const f=e.target.files && e.target.files[0];if(!f)return;try{loadPlaylistText(await f.text())}catch{setStatus('Could not read that playlist file.','error')}});
+ $('loadPlaylist').addEventListener('click',async()=>{
+   const url=safeUrl($('playlistUrl').value); if(!url){setStatus('Enter a valid playlist URL.','error');return}
+   setStatus('Fetching playlist…');
+   try { const res=await fetch(url); if(!res.ok)throw new Error('HTTP '+res.status);loadPlaylistText(await res.text()); }
+   catch { setStatus('Could not fetch playlist. The server may block cross-origin requests (CORS); download the M3U file and import it instead.','error'); }
+ });
+ $('playlistUrl').addEventListener('keydown',e=>{if(e.key==='Enter')$('loadPlaylist').click()});
+ $('filter').addEventListener('input',renderChannels);
+})();
+</script>
+</body>
+</html>
